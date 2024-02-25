@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { RootStack } from "./src/types";
 import Home from "./src/screens/Home";
 import Search from "./src/screens/Search";
+import Movie from "./src/screens/Movie";
 
 const Stack = createNativeStackNavigator<RootStack>();
 
@@ -14,6 +15,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Search" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="Movie" component={Movie} />
       </Stack.Navigator>
     </NavigationContainer>
   );

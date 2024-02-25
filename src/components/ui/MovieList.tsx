@@ -1,16 +1,17 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, ViewProps, StyleProp, ViewStyle } from "react-native";
 import React from "react";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import MovieCard from "../ui/MovieCard";
+import useNavigation from "../../hooks/useNavigation";
 
-interface Props {
+interface Props extends ViewProps {
   title: string;
 }
 
-const MovieList = ({ title }: Props) => {
+const MovieList = ({ title, ...props }: Props) => {
   return (
-    <View className="mt-8" style={{ paddingLeft: wp(7.5), paddingRight: wp(7.5) }}>
-      <Text className="text-white tracking-widest" style={{ fontSize: hp(2.5) }}>
+    <View {...props} className={`mt-8 ${props.className}`} style={{ paddingHorizontal: wp(7.5), ...(props.style as any) }}>
+      <Text className="text-white tracking-wide" style={{ fontSize: hp(2.5) }}>
         {title}
       </Text>
 
