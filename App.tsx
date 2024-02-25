@@ -6,16 +6,18 @@ import { RootStack } from "./src/types";
 import Home from "./src/screens/Home";
 import Search from "./src/screens/Search";
 import Movie from "./src/screens/Movie";
+import Person from "./src/screens/Person";
 
 const Stack = createNativeStackNavigator<RootStack>();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Search" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="Person" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="Movie" component={Movie} />
+        <Stack.Screen name="Person" component={Person} />
       </Stack.Navigator>
     </NavigationContainer>
   );

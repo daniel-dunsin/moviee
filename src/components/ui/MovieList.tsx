@@ -15,7 +15,7 @@ const MovieList = ({ title, ...props }: Props) => {
         {title}
       </Text>
 
-      <ScrollView className="mt-6" horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 20 }}>
+      <ScrollView className="mt-4" horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 20 }}>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, index) => {
           return <MovieCard key={index} />;
         })}
