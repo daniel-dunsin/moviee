@@ -11,7 +11,7 @@ const Header = () => {
     <View className="mx-8 flex-row items-center justify-between pb-6">
       <Bars3CenterLeftIcon size={wp(7)} color="white" />
       <Text className="text-white font-bold" style={{ fontSize: wp(8) }}>
-        <Text className="text-primary">M</Text>ovies
+        <Text className="text-primary">M</Text>oviee
       </Text>
       <MagnifyingGlassIcon size={wp(7)} color={"white"} onPress={() => navigate("Search")} />
     </View>
