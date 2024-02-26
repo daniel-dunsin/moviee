@@ -6,9 +6,18 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 import BackButton from "../components/ui/BackButton";
 import { HeartIcon } from "react-native-heroicons/solid";
 import MovieList from "../components/ui/MovieList";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { Movie, RootStack } from "../types";
+import { useGetPersonMovies, useGetSinglePerson } from "../services";
+import { getImage } from "../utils/image.utils";
 
 const Person = () => {
   const [isFav, setIsFav] = useState<boolean>(false);
+
+  const { id, profile_path } = useRoute<RouteProp<RootStack, "Person">>().params;
+
+  const { data } = useGetSinglePerson(id);
+  const { data: movies, isLoading: moviesLoading } = useGetPersonMovies(id);
 
   return (
     <View className="flex-1 bg-neutral-800">
@@ -33,15 +42,19 @@ const Person = () => {
             style={{ width: wp(74), height: wp(74) }}
             className="overflow-hidden border-2 border-neutral-400 mx-auto mt-12 mb-4 rounded-full"
           >
-            <Image source={require("../../assets/images/image.webp")} className="w-full h-full" resizeMode="cover" />
+            <Image
+              source={{ uri: getImage(profile_path || (data?.profile_path as string)) }}
+              className="w-full h-full"
+              resizeMode="cover"
+            />
           </View>
 
           <Text className="text-white font-bold text-center" style={{ fontSize: hp(3.8) }}>
-            Adejare Daniel
+            {data?.name}
           </Text>
 
           <Text className="text-neutral-400 font-semibold text-center mt-1" style={{ fontSize: hp(2) }}>
-            London, United Kingdom
+            {data?.place_of_birth}
           </Text>
 
           <View className="w-full mt-5 rounded-[50px] bg-neutral-700 p-4 flex-row justify-between">
@@ -49,8 +62,8 @@ const Person = () => {
               <Text className="text-white font-bold text-center" style={{ fontSize: wp(4) }}>
                 Gender
               </Text>
-              <Text className="text-neutral-400 mt-1 font-semibold text-center" style={{ fontSize: wp(3.5) }}>
-                Male
+              <Text className="text-neutral-400 mt-1 font-semibold text-center capitalize" style={{ fontSize: wp(3.5) }}>
+                {["Female", "Male"][(data?.gender as number) - 1] || "Others"}
               </Text>
             </View>
 
@@ -59,7 +72,7 @@ const Person = () => {
                 Birthday
               </Text>
               <Text className="text-neutral-400 mt-1 font-semibold text-center" style={{ fontSize: wp(3.5) }}>
-                2024-23-12
+                {data?.birthday}
               </Text>
             </View>
 
@@ -68,7 +81,7 @@ const Person = () => {
                 Niche
               </Text>
               <Text className="text-neutral-400 mt-1 font-semibold text-center" style={{ fontSize: wp(3.5) }}>
-                Acting
+                {data?.known_for_department}
               </Text>
             </View>
 
@@ -77,26 +90,23 @@ const Person = () => {
                 Popularity
               </Text>
               <Text className="text-neutral-400 mt-1 font-semibold text-center" style={{ fontSize: wp(3.5) }}>
-                64.23
+                {data?.popularity}
               </Text>
             </View>
           </View>
 
-          <View className={`mt-8`}>
-            <Text className="text-white tracking-wide" style={{ fontSize: hp(2.5) }}>
-              Biography
-            </Text>
+          {data?.biography && (
+            <View className={`mt-8`}>
+              <Text className="text-white tracking-wide" style={{ fontSize: hp(2.5) }}>
+                Biography
+              </Text>
 
-            <Text className="text-neutral-200 mt-1" style={{ fontSize: hp(2) }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia beatae iusto explicabo velit ex amet possimus
-              officiis fugit nisi consequatur doloremque quaerat, doloribus harum vitae, quas architecto! Ducimus earum hic
-              commodi recusandae voluptatibus. Iure quaerat quod nostrum ad suscipit? Tenetur amet totam omnis provident minima
-              sunt, quod quidem temporibus doloribus nesciunt rerum tempore accusamus quasi, nemo laboriosam, impedit quia
-              sapiente.
-            </Text>
-          </View>
-
-          <MovieList title="Movies" style={{ paddingHorizontal: 0 }} />
+              <Text className="text-neutral-200 mt-1" style={{ fontSize: hp(2) }}>
+                {data?.biography}
+              </Text>
+            </View>
+          )}
+          <MovieList movies={movies as Movie[]} loading={moviesLoading} title="Movies" style={{ paddingHorizontal: 0 }} />
         </View>
       </ScrollView>
     </View>

@@ -7,18 +7,23 @@ import Home from "./src/screens/Home";
 import Search from "./src/screens/Search";
 import Movie from "./src/screens/Movie";
 import Person from "./src/screens/Person";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const Stack = createNativeStackNavigator<RootStack>();
 
 export default function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Search" component={Search} />
-        <Stack.Screen name="Movie" component={Movie} />
-        <Stack.Screen name="Person" component={Person} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Search" component={Search} />
+          <Stack.Screen name="Movie" component={Movie} />
+          <Stack.Screen name="Person" component={Person} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }

@@ -6,19 +6,44 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-nat
 import { LinearGradient } from "expo-linear-gradient";
 import Casts from "../components/movie/Casts";
 import MovieList from "../components/ui/MovieList";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { Cast, Movie as IMovie, RootStack } from "../types";
+import { useGetMovieCasts, useGetSimilarMovies, useGetSingleMovie } from "../services";
+import { getImage } from "../utils/image.utils";
+import Loading from "../components/ui/Loading";
 
 const height = Dimensions.get("window").height;
 
 const Movie = () => {
+  const {
+    params: { poster_path, id },
+  } = useRoute<RouteProp<RootStack, "Movie">>();
+
+  const scrollView = React.useRef<null>(null);
+  const { data, isLoading } = useGetSingleMovie(id);
+  const { data: similar, isLoading: similarLoading } = useGetSimilarMovies(id);
+  const { data: casts, isLoading: castsLoading } = useGetMovieCasts(id);
+
+  React.useEffect(() => {
+    // @ts-ignore
+    scrollView?.current?.scrollTo({ y: 0, animated: true });
+  }, [id]);
+
   return (
     <View className="flex-1 bg-neutral-800">
       <StatusBar style="light" />
       <SafeAreaView>
-        <ScrollView>
+        <ScrollView ref={scrollView}>
           <Header />
 
           <View style={{ width: wp("100%"), height: hp(50) }}>
-            <Image source={require("../../assets/images/image.webp")} className="w-full h-full" resizeMode={"cover"} />
+            <Image
+              source={{
+                uri: getImage(poster_path || (data?.poster_path as string)),
+              }}
+              className="w-full h-full"
+              resizeMode={"cover"}
+            />
 
             <LinearGradient
               colors={["transparent", "rgba(23, 23, 23, 0.8)", "rgba(23, 23, 23, 1)"]}
@@ -39,30 +64,45 @@ const Movie = () => {
               paddingBottom: 40,
             }}
           >
-            <Text className="text-neutral-100 font-bold text-center" style={{ fontSize: hp(3.5) }}>
-              Avatar The Last Airbender
-            </Text>
+            {isLoading ? (
+              <Loading text="Fetching Video Info" />
+            ) : (
+              <>
+                <Text className="text-neutral-100 font-bold text-center" style={{ fontSize: hp(3.5) }}>
+                  {data?.original_title}
+                </Text>
 
-            <Text className="text-neutral-300 text-center font-semibold mt-2" style={{ fontSize: hp(2.1) }}>
-              Realeased • 2020 • 170 mins
-            </Text>
+                <Text className="text-neutral-300 text-center font-semibold mt-2" style={{ fontSize: hp(2.1) }}>
+                  {data?.status} • {new Date(data?.release_date as string).getFullYear()} • {data?.runtime} mins
+                </Text>
 
-            <Text className="text-neutral-300 text-center font-semibold mt-2" style={{ fontSize: hp(2.1) }}>
-              Action • Thrill • Comedy
-            </Text>
+                <Text className="text-neutral-300 text-center font-semibold mt-2" style={{ fontSize: hp(2.1) }}>
+                  {data?.genres?.map((genre, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        {" "}
+                        {index != 0 && "•"} {genre?.name}
+                      </React.Fragment>
+                    );
+                  })}
+                </Text>
 
-            <Text className="mt-4 text-neutral-300" style={{ fontSize: hp(2.1) }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero facilis, aperiam consequuntur est unde mollitia nam
-              fuga accusantium quae, officia ea eligendi soluta pariatur nostrum optio saepe aut, aspernatur alias inventore
-              voluptatem. Quidem excepturi aspernatur vero velit. Perspiciatis deserunt minima ipsa molestiae, aspernatur mollitia
-              quam veritatis nihil sed, sunt iure?
-            </Text>
+                <Text className="mt-4 text-neutral-300" style={{ fontSize: hp(2.1) }}>
+                  {data?.overview}
+                </Text>
 
-            {/* Casts */}
-            <Casts />
+                {/* Casts */}
+                <Casts casts={casts as Cast[]} loading={castsLoading} />
 
-            {/* Similar Movies */}
-            <MovieList title="Similar Movies" style={{ paddingHorizontal: 0 }} />
+                {/* Similar Movies */}
+                <MovieList
+                  movies={similar as IMovie[]}
+                  loading={similarLoading}
+                  title="Similar Movies"
+                  style={{ paddingHorizontal: 0 }}
+                />
+              </>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>

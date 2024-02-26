@@ -13,6 +13,7 @@
     "@react-navigation/native-stack": "^6.9.20",
     "@tanstack/react-query": "^5.24.1",
     "@types/react-native-snap-carousel": "^3.8.10",
+    "axios": "^1.6.7",
     "expo": "~50.0.3",
     "expo-linear-gradient": "~12.7.2",
     "expo-status-bar": "~1.11.1",
