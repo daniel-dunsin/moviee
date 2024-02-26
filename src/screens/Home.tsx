@@ -21,7 +21,6 @@ const Home = () => {
     await upcomingRefetch();
     await topRatedRefetch();
     setRefreshing(false);
-    setRefreshing(false);
   }, []);
 
   return (
