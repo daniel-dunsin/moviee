@@ -80,6 +80,10 @@ export function useGetSingleMovie(id: string): useQueryResult<Movie> {
     enabled: id ? true : false,
   });
 
+  useEffect(() => {
+    if (id) refetch();
+  }, [id]);
+
   return { data, isLoading, isError, refetch };
 }
 
